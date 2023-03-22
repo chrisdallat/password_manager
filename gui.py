@@ -14,7 +14,6 @@ from manager import *
 class mainWindow(QWidget):
 
     current_user = None
-    website_entry = [4]
 
     def __init__(self):
         super().__init__()
@@ -22,81 +21,93 @@ class mainWindow(QWidget):
         self.pm = passwordManager()
 
         self.setWindowTitle("Password Manager: Main")
-        self.setContentsMargins(30, 30, 30, 30)
-
+        self.setContentsMargins(30, 0, 30, 30)
+        
         layout = QGridLayout()
         self.setLayout(layout)
 
+        self.logo_label = QLabel()
+
+        pixmap = QPixmap('images/padlock.png')
+        pixmap = pixmap.scaled(130, 130, Qt.AspectRatioMode.KeepAspectRatio)
+        self.logo_label.setPixmap(pixmap)
+        self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        layout.addWidget(self.logo_label, 0, 1, 1, 2)
+
         self.message_label = QLabel("Note: View/Delete: Enter website name only  --||--  Add/Edit: Enter all fields")
-        layout.addWidget(self.message_label, 0, 0, 1, 3)
+        layout.addWidget(self.message_label, 1, 0, 1, 3)
         
         input_label = QLabel("Enter Website Name: ")
-        layout.addWidget(input_label, 2, 0)
+        layout.addWidget(input_label, 3, 0)
 
         self.user_input = QLineEdit()
-        layout.addWidget(self.user_input, 2, 1)
+        layout.addWidget(self.user_input, 3, 2)
         
         in_url_label = QLabel("Enter Website URL: ")
-        layout.addWidget(in_url_label, 3, 0)
+        layout.addWidget(in_url_label, 4, 0)
 
         self.in_url_input = QLineEdit()
-        layout.addWidget(self.in_url_input, 3, 1)
+        layout.addWidget(self.in_url_input, 4, 2)
 
         username_label = QLabel("Enter Username: ")
-        layout.addWidget(username_label, 4, 0)
+        layout.addWidget(username_label, 5, 0)
 
         self.username_input = QLineEdit()
-        layout.addWidget(self.username_input, 4, 1)
+        layout.addWidget(self.username_input, 5, 2)
 
         password_label = QLabel("Enter Password: ")
-        layout.addWidget(password_label, 5, 0)
+        layout.addWidget(password_label, 6, 0)
 
         self.password_input = QLineEdit()
-        layout.addWidget(self.password_input, 5, 1)
+        layout.addWidget(self.password_input, 6, 2)
 
         view_button = QPushButton("View")
-        view_button.setFixedWidth(120)
+        view_button.setFixedWidth(140)
         view_button.clicked.connect(self.view_login_info)
-        layout.addWidget(view_button, 1, 0)
+        layout.addWidget(view_button, 2, 0)
 
         del_button = QPushButton("Delete")
-        del_button.setFixedWidth(120)
+        del_button.setFixedWidth(140)
         del_button.clicked.connect(self.delete_login_info)
-        layout.addWidget(del_button, 1, 1)
+        layout.addWidget(del_button, 2, 1)
 
         edit_button = QPushButton("Edit")
-        edit_button.setFixedWidth(120)
+        edit_button.setFixedWidth(140)
         edit_button.clicked.connect(self.edit_login_info)
-        layout.addWidget(edit_button, 1, 2)
+        layout.addWidget(edit_button, 2, 2)
 
         add_button = QPushButton("Add")
-        add_button.setFixedWidth(120)
+        add_button.setFixedWidth(140)
         add_button.clicked.connect(self.add_login_info)
-        layout.addWidget(add_button, 1, 3)
+        layout.addWidget(add_button, 2, 3)
 
-        title2 = QLabel("----Login Details----")
-        layout.addWidget(title2, 6, 1) 
+        self.title2 = QLabel("----Login Details----")
+        layout.addWidget(self.title2, 7, 0, 1, 4) 
+        self.title2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.website_label = QLabel("Website Name: ")
-        layout.addWidget(self.website_label, 7, 0, 1, 3)  
+        layout.addWidget(self.website_label, 8, 0, 1, 3)  
 
         self.url_label = QLabel("Website URL: ")
-        layout.addWidget(self.url_label, 8, 0, 1, 3)  
+        layout.addWidget(self.url_label, 9, 0, 1, 3)  
 
         self.username_label = QLabel("Username: ")
-        layout.addWidget(self.username_label, 9, 0, 1, 3) 
+        layout.addWidget(self.username_label, 10, 0, 1, 3) 
 
         self.password_label = QLabel("Password: ")
-        layout.addWidget(self.password_label, 10, 0, 1, 3)
+        layout.addWidget(self.password_label, 11, 0, 1, 3)
+
+        self.setFixedSize(self.sizeHint())
 
     def view_login_info(self):
         if self.pm.valid_website_info(self.current_user, self.user_input.text()) is True:
             self.website_info = self.pm.view_website_info(self.current_user, self.user_input.text())
-            self.website_label.setText(f"Website Name: \t{self.user_input.text()}")
-            self.url_label.setText(f"Website URL: \t{self.website_info['address']}")
-            self.username_label.setText(f"Username: \t{self.website_info['username']}")
+            self.website_label.setText(f"Website Name: \t\t\t\t{self.user_input.text()}")
+            self.url_label.setText(f"Website URL: \t\t\t\t{self.website_info['address']}")
+            self.username_label.setText(f"Username: \t\t\t\t{self.website_info['username']}")
             decrypted = self.pm.decrypt_password(self.website_info['password'])
-            self.password_label.setText(f"Password: \t{decrypted}")
+            self.password_label.setText(f"Password: \t\t\t\t{decrypted}")
         else:
             self.website_label.setText(f"Website Name: ")
             self.url_label.setText(f"Website URL: ")
@@ -154,16 +165,16 @@ class loginWindow(QWidget):
         self.pm = passwordManager()
         self.main_window = mainWindow()
         self.main_window.hide()
-
+        
         self.setWindowTitle("Password Manager: Log in")
-        self.setContentsMargins(30, 30, 30, 30)
+        self.setContentsMargins(30, 0, 30, 30)
 
         layout = QGridLayout()
         self.setLayout(layout)
 
         self.logo_label = QLabel()
 
-        pixmap = QPixmap('padlock.png')
+        pixmap = QPixmap('images/padlock.png')
         pixmap = pixmap.scaled(170, 170, Qt.AspectRatioMode.KeepAspectRatio)
         self.logo_label.setPixmap(pixmap)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -196,6 +207,8 @@ class loginWindow(QWidget):
 
         self.info_label = QLabel("")
         layout.addWidget(self.info_label, 4, 0)
+
+        self.setFixedSize(self.sizeHint())
 
     def update_password_strength(self, password):
         strength = self.password_strength(password)
