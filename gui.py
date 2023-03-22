@@ -133,6 +133,7 @@ class mainWindow(QWidget):
         self.clear_login_info()
         self.pm.add_website(self.current_user, self.user_input.text(), self.in_url_input.text(), 
                             self.username_input.text(), self.password_input.text())
+        self.message_label.setText(f"Login information added successfully!")
         self.user_input.clear()
         self.in_url_input.clear()
         self.username_input.clear()
@@ -161,29 +162,59 @@ class loginWindow(QWidget):
         self.setLayout(layout)
 
         self.user_label = QLabel("Username: ")
-        layout.addWidget(self.user_label, 1, 0)
+        layout.addWidget(self.user_label, 0, 0)
 
         self.pass_label = QLabel("Password: ")
-        layout.addWidget(self.pass_label, 2, 0)
+        layout.addWidget(self.pass_label, 1, 0)
 
         self.user_input = QLineEdit()
-        layout.addWidget(self.user_input, 1, 1)
+        layout.addWidget(self.user_input, 0, 1)
 
         self.pass_input = QLineEdit()
-        layout.addWidget(self.pass_input, 2, 1)
+        self.pass_input.setEchoMode(QLineEdit.EchoMode.Password)
+        layout.addWidget(self.pass_input, 1, 1)
+        self.pass_input.textChanged.connect(self.update_password_strength)
 
         login_button = QPushButton("Login")
         login_button.setFixedWidth(120)
         login_button.clicked.connect(self.validate_login)
-        layout.addWidget(login_button, 3, 0)
+        layout.addWidget(login_button, 2, 0)
 
         login_button = QPushButton("New User")
         login_button.setFixedWidth(120)
         login_button.clicked.connect(self.validate_new_user)
-        layout.addWidget(login_button, 3, 1)  
+        layout.addWidget(login_button, 2, 1)  
 
         self.info_label = QLabel("")
         layout.addWidget(self.info_label, 3, 0)
+
+    def update_password_strength(self, password):
+        strength = self.password_strength(password)
+        self.info_label.setText(f"Password Strength: {strength}")
+
+    def password_strength(self, password):
+        """Check the strength of a password"""
+        symbols = "!@#$%^&*()_-+={[}]|\:;\"'<,>.?/"
+
+        # Define a set of rules to check against
+        rules = [
+            lambda p: any(c.isupper() for c in p),
+            lambda p: any(c.islower() for c in p),
+            lambda p: any(c.isdigit() for c in p),
+            lambda p: any(c in symbols for c in p),
+            lambda p: len(p) >= 8
+        ]
+
+        # Check the password against each rule
+        score = sum(1 for rule in rules if rule(password))
+
+        # Return a message based on the score
+        if score <= 1:
+            return "weak"
+        elif score == 2:
+            return "medium"
+        else:
+            return "strong"
 
     def validate_login(self, pm):
         print("LOGIN ENTERED")
