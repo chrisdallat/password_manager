@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (
     QLineEdit, QVBoxLayout, QHBoxLayout, QGridLayout,
 )
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QPixmap
 
 from manager import *
 
@@ -26,7 +26,7 @@ class mainWindow(QWidget):
 
         layout = QGridLayout()
         self.setLayout(layout)
-        
+
         self.message_label = QLabel("Note: View/Delete: Enter website name only  --||--  Add/Edit: Enter all fields")
         layout.addWidget(self.message_label, 0, 0, 1, 3)
         
@@ -161,32 +161,41 @@ class loginWindow(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
+        self.logo_label = QLabel()
+
+        pixmap = QPixmap('padlock.png')
+        pixmap = pixmap.scaled(170, 170, Qt.AspectRatioMode.KeepAspectRatio)
+        self.logo_label.setPixmap(pixmap)
+        self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        layout.addWidget(self.logo_label, 0, 0, 1, 2)
+
         self.user_label = QLabel("Username: ")
-        layout.addWidget(self.user_label, 0, 0)
+        layout.addWidget(self.user_label, 1, 0)
 
         self.pass_label = QLabel("Password: ")
-        layout.addWidget(self.pass_label, 1, 0)
+        layout.addWidget(self.pass_label, 2, 0)
 
         self.user_input = QLineEdit()
-        layout.addWidget(self.user_input, 0, 1)
+        layout.addWidget(self.user_input, 1, 1)
 
         self.pass_input = QLineEdit()
         self.pass_input.setEchoMode(QLineEdit.EchoMode.Password)
-        layout.addWidget(self.pass_input, 1, 1)
+        layout.addWidget(self.pass_input, 2, 1)
         self.pass_input.textChanged.connect(self.update_password_strength)
 
         login_button = QPushButton("Login")
         login_button.setFixedWidth(120)
         login_button.clicked.connect(self.validate_login)
-        layout.addWidget(login_button, 2, 0)
+        layout.addWidget(login_button, 3, 0)
 
         login_button = QPushButton("New User")
         login_button.setFixedWidth(120)
         login_button.clicked.connect(self.validate_new_user)
-        layout.addWidget(login_button, 2, 1)  
+        layout.addWidget(login_button, 3, 1)  
 
         self.info_label = QLabel("")
-        layout.addWidget(self.info_label, 3, 0)
+        layout.addWidget(self.info_label, 4, 0)
 
     def update_password_strength(self, password):
         strength = self.password_strength(password)
