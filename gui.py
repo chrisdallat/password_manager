@@ -27,7 +27,7 @@ class mainWindow(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
         
-        self.message_label = QLabel("Note: View/Delete: Enter website name only  --||--  Add: Enter all fields")
+        self.message_label = QLabel("Note: View/Delete: Enter website name only  --||--  Add/Edit: Enter all fields")
         layout.addWidget(self.message_label, 0, 0, 1, 3)
         
         input_label = QLabel("Enter Website Name: ")
@@ -64,10 +64,15 @@ class mainWindow(QWidget):
         del_button.clicked.connect(self.delete_login_info)
         layout.addWidget(del_button, 1, 1)
 
+        edit_button = QPushButton("Edit")
+        edit_button.setFixedWidth(120)
+        edit_button.clicked.connect(self.edit_login_info)
+        layout.addWidget(edit_button, 1, 2)
+
         add_button = QPushButton("Add")
         add_button.setFixedWidth(120)
         add_button.clicked.connect(self.add_login_info)
-        layout.addWidget(add_button, 1, 2)
+        layout.addWidget(add_button, 1, 3)
 
         title2 = QLabel("----Login Details----")
         layout.addWidget(title2, 6, 1) 
@@ -108,6 +113,22 @@ class mainWindow(QWidget):
             self.message_label.setText(f"Website match not found!")
         self.user_input.clear()
 
+    def edit_login_info(self):
+        self.clear_login_info()
+        if self.pm.valid_website_info(self.current_user, self.user_input.text()) is True:
+            try:
+                self.pm.edit_website(self.current_user, self.user_input.text(), self.in_url_input.text(), 
+                                self.username_input.text(), self.password_input.text())
+                self.message_label.setText(f"Login information edited successfully!")
+            except:
+                self.message_label.setText(f"Not all fields entered!")
+        else:
+            self.message_label.setText(f"Website does not exist!")
+        self.user_input.clear()
+        self.in_url_input.clear()
+        self.username_input.clear()
+        self.password_input.clear()
+
     def add_login_info(self):
         self.clear_login_info()
         self.pm.add_website(self.current_user, self.user_input.text(), self.in_url_input.text(), 
@@ -123,17 +144,6 @@ class mainWindow(QWidget):
         self.username_label.setText(f"Username: ")
         self.password_label.setText(f"Password: ")
         
-            
-
-
-        
-
-
-
-
-
-
-    
 
 class loginWindow(QWidget):
 
@@ -144,33 +154,33 @@ class loginWindow(QWidget):
         self.main_window = mainWindow()
         self.main_window.hide()
 
-        self.setWindowTitle("Password Manager: Login")
+        self.setWindowTitle("Password Manager: Log in")
         self.setContentsMargins(30, 30, 30, 30)
 
         layout = QGridLayout()
         self.setLayout(layout)
 
         self.user_label = QLabel("Username: ")
-        layout.addWidget(self.user_label, 0, 0)
+        layout.addWidget(self.user_label, 1, 0)
 
         self.pass_label = QLabel("Password: ")
-        layout.addWidget(self.pass_label, 1, 0)
+        layout.addWidget(self.pass_label, 2, 0)
 
         self.user_input = QLineEdit()
-        layout.addWidget(self.user_input, 0, 1)
+        layout.addWidget(self.user_input, 1, 1)
 
         self.pass_input = QLineEdit()
-        layout.addWidget(self.pass_input, 1, 1)
+        layout.addWidget(self.pass_input, 2, 1)
 
         login_button = QPushButton("Login")
         login_button.setFixedWidth(120)
         login_button.clicked.connect(self.validate_login)
-        layout.addWidget(login_button, 2, 0)
+        layout.addWidget(login_button, 3, 0)
 
         login_button = QPushButton("New User")
         login_button.setFixedWidth(120)
         login_button.clicked.connect(self.validate_new_user)
-        layout.addWidget(login_button, 2, 1)  
+        layout.addWidget(login_button, 3, 1)  
 
         self.info_label = QLabel("")
         layout.addWidget(self.info_label, 3, 0)
@@ -181,11 +191,11 @@ class loginWindow(QWidget):
         password = self.pass_input.text()
         if self.pm.authenticate_user(username, password) is True:
             self.pm.save_data_to_file()
-            self.main_window.show()
             self.main_window.current_user = username
+            self.main_window.show()
             self.hide()
         else: 
-            self.info_label.setText("Invalid Log In, Try Again!")
+            self.info_label.setText("Invalid log in, try again!")
             
         
     def validate_new_user(self):
@@ -194,7 +204,7 @@ class loginWindow(QWidget):
         password = self.pass_input.text()
 
         if self.pm.add_user(username, password) is True:
-            self.info_label.setText("New User Created, Log In Now!")
+            self.info_label.setText("New user created, proceed to log in!")
             self.pm.save_data_to_file()
         else:
-            self.info_label.setText("Username already Exists!")
+            self.info_label.setText("Username already exists!")

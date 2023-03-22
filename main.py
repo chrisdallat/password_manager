@@ -22,8 +22,7 @@ def main():
     print("Welcome to Password Manager!")
 
     login_window.show() 
-       
-    
+
     sys.exit(app.exec())
 
 
