@@ -1,4 +1,5 @@
-from gui import *
+from login_gui import *
+from main_gui import *
 from manager import *
 
 def main():
