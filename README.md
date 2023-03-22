@@ -17,6 +17,12 @@ Python 3.x is needed to run the program as is PyQt6.x which can be installed as 
    pip3 install PyQt6
   ```
 
+and to access the Fernet cryptography module:
+
+```sh
+   pip install cryptography
+  ```
+
 ## Installation
 
 Run the program from the terminal by navigating to the /password_manager directory in the terminal and inputting:

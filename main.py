@@ -1,4 +1,5 @@
 from login_gui import *
+from main_gui import *
 from manager import *
 
 def main():
@@ -18,10 +19,8 @@ def main():
         }
     """)
     login_window = loginWindow()
-
-    print("Welcome to Password Manager!")
-
     login_window.show() 
+    print("Welcome to Password Manager!")
 
     sys.exit(app.exec())
 

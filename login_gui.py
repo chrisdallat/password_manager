@@ -9,192 +9,45 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QPixmap
 
 from manager import *
-
-
-class mainWindow(QWidget):
-
-    current_user = None
-
-    def __init__(self):
-        super().__init__()
-
-        self.pm = passwordManager()
-
-        self.setWindowTitle("Password Manager: Main")
-        self.setContentsMargins(30, 0, 30, 30)
-        
-        layout = QGridLayout()
-        self.setLayout(layout)
-
-        self.logo_label = QLabel()
-
-        pixmap = QPixmap('images/padlock.png')
-        pixmap = pixmap.scaled(130, 130, Qt.AspectRatioMode.KeepAspectRatio)
-        self.logo_label.setPixmap(pixmap)
-        self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        layout.addWidget(self.logo_label, 0, 1, 1, 2)
-
-        self.message_label = QLabel("Note: View/Delete: Enter website name only  --||--  Add/Edit: Enter all fields")
-        layout.addWidget(self.message_label, 1, 0, 1, 3)
-
-        view_button = QPushButton("View")
-        view_button.setFixedWidth(140)
-        view_button.clicked.connect(self.view_login_info)
-        layout.addWidget(view_button, 2, 0)
-
-        del_button = QPushButton("Delete")
-        del_button.setFixedWidth(140)
-        del_button.clicked.connect(self.delete_login_info)
-        layout.addWidget(del_button, 2, 1)
-
-        edit_button = QPushButton("Edit")
-        edit_button.setFixedWidth(140)
-        edit_button.clicked.connect(self.edit_login_info)
-        layout.addWidget(edit_button, 2, 2)
-
-        add_button = QPushButton("Add")
-        add_button.setFixedWidth(140)
-        add_button.clicked.connect(self.add_login_info)
-        layout.addWidget(add_button, 2, 3)
-        
-        input_label = QLabel("Enter Website Name: ")
-        layout.addWidget(input_label, 3, 0)
-
-        self.user_input = QLineEdit()
-        layout.addWidget(self.user_input, 3, 2)
-        
-        in_url_label = QLabel("Enter Website URL: ")
-        layout.addWidget(in_url_label, 4, 0)
-
-        self.in_url_input = QLineEdit()
-        layout.addWidget(self.in_url_input, 4, 2)
-
-        username_label = QLabel("Enter Username: ")
-        layout.addWidget(username_label, 5, 0)
-
-        self.username_input = QLineEdit()
-        layout.addWidget(self.username_input, 5, 2)
-
-        password_label = QLabel("Enter Password: ")
-        layout.addWidget(password_label, 6, 0)
-
-        self.password_input = QLineEdit()
-        layout.addWidget(self.password_input, 6, 2)
-
-        self.title2 = QLabel("----Login Details----")
-        layout.addWidget(self.title2, 7, 0, 1, 4) 
-        self.title2.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.website_label = QLabel("Website Name: ")
-        layout.addWidget(self.website_label, 8, 0, 1, 3)  
-
-        self.url_label = QLabel("Website URL: ")
-        layout.addWidget(self.url_label, 9, 0, 1, 3)  
-
-        self.username_label = QLabel("Username: ")
-        layout.addWidget(self.username_label, 10, 0, 1, 3) 
-
-        self.password_label = QLabel("Password: ")
-        layout.addWidget(self.password_label, 11, 0, 1, 3)
-
-        self.setFixedSize(self.sizeHint())
-
-    def view_login_info(self):
-        if self.pm.valid_website_info(self.current_user, self.user_input.text()) is True:
-            self.website_info = self.pm.view_website_info(self.current_user, self.user_input.text())
-            self.website_label.setText(f"Website Name: \t\t\t\t{self.user_input.text()}")
-            self.url_label.setText(f"Website URL: \t\t\t\t{self.website_info['address']}")
-            self.username_label.setText(f"Username: \t\t\t\t{self.website_info['username']}")
-            decrypted = self.pm.decrypt_password(self.website_info['password'])
-            self.password_label.setText(f"Password: \t\t\t\t{decrypted}")
-        else:
-            self.website_label.setText(f"Website Name: ")
-            self.url_label.setText(f"Website URL: ")
-            self.username_label.setText(f"Username: ")
-            self.password_label.setText(f"Password: ")
-            self.message_label.setText(f"Website information not available!")
-        self.user_input.clear()
-
-    def delete_login_info(self):
-        self.clear_login_info()
-        if self.pm.delete_website(self.current_user, self.user_input.text()) is True:
-            self.message_label.setText(f"Website Information Deleted!")
-        else:
-            self.message_label.setText(f"Website match not found!")
-        self.user_input.clear()
-
-    def edit_login_info(self):
-        self.clear_login_info()
-        if self.pm.valid_website_info(self.current_user, self.user_input.text()) is True:
-            try:
-                self.pm.edit_website(self.current_user, self.user_input.text(), self.in_url_input.text(), 
-                                self.username_input.text(), self.password_input.text())
-                self.message_label.setText(f"Login information edited successfully!")
-            except:
-                self.message_label.setText(f"Not all fields entered!")
-        else:
-            self.message_label.setText(f"Website does not exist!")
-        self.user_input.clear()
-        self.in_url_input.clear()
-        self.username_input.clear()
-        self.password_input.clear()
-
-    def add_login_info(self):
-        self.clear_login_info()
-        self.pm.add_website(self.current_user, self.user_input.text(), self.in_url_input.text(), 
-                            self.username_input.text(), self.password_input.text())
-        self.message_label.setText(f"Login information added successfully!")
-        self.user_input.clear()
-        self.in_url_input.clear()
-        self.username_input.clear()
-        self.password_input.clear()
-
-    def clear_login_info(self):
-        self.website_label.setText(f"Website Name: ")
-        self.url_label.setText(f"Website URL: ")
-        self.username_label.setText(f"Username: ")
-        self.password_label.setText(f"Password: ")
-        
-
+from main_gui import *
 class loginWindow(QWidget):
 
     def __init__(self):
         super().__init__()
 
         self.pm = passwordManager()
+        #initialise the main interface but keep hidden until authentication
         self.main_window = mainWindow()
         self.main_window.hide()
-        
+
         self.setWindowTitle("Password Manager: Log in")
         self.setContentsMargins(30, 0, 30, 30)
-
         layout = QGridLayout()
         self.setLayout(layout)
 
+        #Padlock Logo
         self.logo_label = QLabel()
-
         pixmap = QPixmap('images/padlock.png')
         pixmap = pixmap.scaled(170, 170, Qt.AspectRatioMode.KeepAspectRatio)
         self.logo_label.setPixmap(pixmap)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
         layout.addWidget(self.logo_label, 0, 0, 1, 2)
 
+        #Login Labels and Textboxes
         self.user_label = QLabel("Username: ")
         layout.addWidget(self.user_label, 1, 0)
-
         self.pass_label = QLabel("Password: ")
         layout.addWidget(self.pass_label, 2, 0)
-
         self.user_input = QLineEdit()
         layout.addWidget(self.user_input, 1, 1)
-
+        #set chars to change to asterisks in password box
         self.pass_input = QLineEdit()
         self.pass_input.setEchoMode(QLineEdit.EchoMode.Password)
         layout.addWidget(self.pass_input, 2, 1)
+        #assign signal to password input box to update password strength message
         self.pass_input.textChanged.connect(self.update_password_strength)
 
+        #Buttons
         login_button = QPushButton("Login")
         login_button.setFixedWidth(120)
         login_button.clicked.connect(self.validate_login)
@@ -205,20 +58,22 @@ class loginWindow(QWidget):
         login_button.clicked.connect(self.validate_new_user)
         layout.addWidget(login_button, 3, 1)  
 
+        #Info/Error/Password Strength Label
         self.info_label = QLabel("")
         layout.addWidget(self.info_label, 4, 0, 1, 2)
 
+        #Fix size of window to prevent users resizing by dragging the borders
         self.setFixedSize(self.sizeHint())
 
+    #update password strength message in real time as chars entered
     def update_password_strength(self, password):
         strength = self.password_strength(password)
         self.info_label.setText(f"Password Strength: {strength}")
 
+    #assign password strength based on set of simple rules, but not enforcing it.
     def password_strength(self, password):
         """Check the strength of a password"""
         symbols = "!@#$%^&*()_-+={[}]|\:;\"'<,>.?/"
-
-        # Define a set of rules to check against
         rules = [
             lambda p: any(c.isupper() for c in p),
             lambda p: any(c.islower() for c in p),
@@ -227,10 +82,8 @@ class loginWindow(QWidget):
             lambda p: len(p) >= 8
         ]
 
-        # Check the password against each rule
         score = sum(1 for rule in rules if rule(password))
 
-        # Return a message based on the score
         if score <= 1:
             return "weak"
         elif score == 2:
@@ -239,7 +92,6 @@ class loginWindow(QWidget):
             return "strong"
 
     def validate_login(self, pm):
-        print("LOGIN ENTERED")
         username = self.user_input.text()
         password = self.pass_input.text()
         if self.pm.authenticate_user(username, password) is True:
@@ -252,7 +104,6 @@ class loginWindow(QWidget):
             
         
     def validate_new_user(self):
-        print("NEW USER ENTERED")
         username = self.user_input.text()
         password = self.pass_input.text()
 

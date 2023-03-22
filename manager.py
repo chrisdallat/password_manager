@@ -19,12 +19,10 @@ class passwordManager:
         self.key = Fernet.generate_key()
         with open(path, "wb") as f:
             f.write(self.key)
-        print("create_key -> success")
 
     def load_key(self, path):
         with open(path, "rb") as f:
             self.key = f.read()
-        print("load_key -> success")
 
     def encrypt_password(self, password):
         f = Fernet(self.key)
@@ -37,22 +35,17 @@ class passwordManager:
         return decrypted_password
 
     def authenticate_user(self, username, password):
-        print("authenticating user")
         if username in self.users and password == self.decrypt_password(self.users[username]['password']):
-            print("authentication -> success")
             return True
         else:
-            print("authentication -> fail, try again, or make new account")
             return False
 
     def add_user(self, username, password):
         if username in self.users:
-            print("User already exists, try another username")
             return False
         else:
             encrypted_password = self.encrypt_password(password)
             self.users[username] = {"password": encrypted_password, "websites": {}}
-            print(f"User {username} added")
             self.save_data_to_file()
             self.load_data_from_file()
             return True
@@ -66,7 +59,6 @@ class passwordManager:
             "password": encrypted_password
         }
         self.save_data_to_file()
-        print(f"Website {website_name} added for user {username}")
 
     def edit_website(self, username, website_name, website_address, website_username, website_password):
         self.load_data_from_file()
@@ -77,16 +69,13 @@ class passwordManager:
             "password": encrypted_password
         }
         self.save_data_to_file()
-        print(f"Website {website_name} edited for user {username}")
 
     def delete_website(self, username, website_name):
         self.load_data_from_file()
         if website_name not in self.users[username]["websites"]:
-            print(f"Website {website_name} does not exist for user {username}")
             return False
         else:
             del self.users[username]["websites"][website_name]
-            print(f"Website {website_name} deleted for user {username}")
             self.save_data_to_file()
             return True
 
@@ -123,7 +112,6 @@ class passwordManager:
 
             with open(filename, 'w') as f:
                 json.dump(data, f)
-        print("save_data_to_file -> success")
 
     def load_data_from_file(self):
         filename = "passmanager.json"
@@ -138,4 +126,3 @@ class passwordManager:
                     self.users[username] = user_info
             except:
                 data = ""
-        print("load_data_from_file -> success")
