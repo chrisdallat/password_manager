@@ -139,4 +139,3 @@ class passwordManager:
             except:
                 data = ""
         print("load_data_from_file -> success")
-    
