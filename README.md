@@ -2,13 +2,11 @@
 
 ## Description
 
-This Application is a Password Manager for desktop, designed to allow a user[s] to create an account, log into their account, maintaining relative security with an encrypted password storage and upon authentication, add, view, edit and delete authentication information for any websites that they please. the passwords of these websites are also stored in the database encrypted as to provide a level of security in directly accessing the 'passmanager.json' file. 
+This Application is a Password Manager for desktop, designed to allow a user[s] to create an account and log into their account, while maintaining relative security with an encrypted password storage. Upon authentication they can add, view, edit and delete authentication information for any websites that they want to store or have stored already. The passwords of these websites are also stored in the database encrypted as to provide a level of security in directly accessing the 'passmanager.json' file. 
 
 Upon first initialisation, the encryption key is generated into the 'key.key' file in the main directory. This is not to be deleted or altered as it is require to decrypt the passwords stored in the database.
 
 It is also required that a 'passmanager.json' file is present in the main directory upon running the program. 
-
-
 
 
 ## Dependencies
@@ -33,7 +31,7 @@ The Password Manager runs through a GUI with a simplistic interface. Upon runnin
 
 The program will display error messages for all login or account creation errors, while also displaying the strength of the current password as it is entered, while hiding the password characters from the screen. 
 
-Log in Window:
+### Log in Window:
 
 <img src="./images/login.png" width="400" />
 
@@ -49,6 +47,6 @@ Add: the user can enter the details of the website to be stored in all 4 of the 
 
 All relevant error messages will be displayed at the top of the screen when data is not accepted or incorrect. 
 
-Main Interface Window:
+### Main Interface Window:
 
 <img src="./images/main.png" width="550" />
