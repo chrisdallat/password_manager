@@ -83,7 +83,7 @@ class passwordManager:
         self.load_data_from_file()
         if website_name not in self.users[username]["websites"]:
             try: 
-                print("Website does not exist for user")
+                pass
             except:
                 return False
         else:

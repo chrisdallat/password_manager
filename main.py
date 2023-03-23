@@ -1,6 +1,6 @@
-from login_gui import *
-from main_gui import *
-from manager import *
+from login_gui import loginWindow
+from main_gui import mainWindow
+from manager import passwordManager
 
 def main():
     app = QApplication(sys.argv)

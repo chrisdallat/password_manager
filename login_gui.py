@@ -8,8 +8,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QPixmap
 
-from manager import *
-from main_gui import *
+from manager import passwordManager
+from main_gui import mainWindow
 class loginWindow(QWidget):
 
     def __init__(self):
